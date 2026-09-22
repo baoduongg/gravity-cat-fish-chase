@@ -2,7 +2,7 @@
 
 > **Tựa game 2D Side-scrolling Platformer phong cách Pastel nhẹ nhàng, vui nhộn và gây nghiện trên nền tảng Web!**
 
-![HTML5 Canvas](https://img.shields.io/badge/Engine-HTML5%20Canvas%202D-orange?style=flat-square)
+![Phaser 3](https://img.shields.io/badge/Engine-Phaser%203-8B5CF6?style=flat-square)
 ![JavaScript](https://img.shields.io/badge/Language-Vanilla%20JavaScript-yellow?style=flat-square)
 ![CSS3](https://img.shields.io/badge/Styling-Vanilla%20CSS3%20(Pastel)-blue?style=flat-square)
 ![Web Audio](https://img.shields.io/badge/Audio-Web%20Audio%20API%20Synth-green?style=flat-square)
@@ -74,25 +74,41 @@ Sau đó truy cập: `http://localhost:8000` (hoặc cổng tương ứng).
 
 ```text
 gravity-cat-fish/
-├── index.html                                   # Giao diện chính, HUD, Shop Modal & Screen overlays
+├── index.html                                   # Giao diện chính, HUD, mobile touch-controls & load Phaser 3 (CDN)
 ├── style.css                                    # Thiết kế giao diện pastel, glassmorphism & animation
-├── game.js                                      # Game Engine, vật lý, đồ họa Canvas 2D, âm thanh & logic
+├── src/
+│   ├── config.js                                # Hằng số vật lý & thế giới game (gravity, speed, kích thước...)
+│   ├── catalog.js                                # Danh mục skin mèo & hiệu ứng vệt chạy (trails) có thể mở khóa
+│   ├── storage.js                                # Đọc/ghi tiến trình người chơi vào localStorage
+│   ├── textures.js                               # Sinh toàn bộ texture (mèo, cá, bẫy, bục...) bằng Phaser.GameObjects.Graphics
+│   ├── audio.js                                  # Sinh toàn bộ SFX & nhạc nền bằng Web Audio API (oscillator synth)
+│   └── scenes/                                   # Các Scene của Phaser (vòng đời preload/create/update)
+│       ├── BootScene.js                          # Khởi tạo texture/audio, chuyển sang HomeScene
+│       ├── HomeScene.js                          # Màn hình chính
+│       ├── PlayScene.js                          # Gameplay chính: vật lý, bẫy, bục nhảy, combo, HUD
+│       ├── PauseScene.js                         # Màn hình tạm dừng
+│       ├── GameOverScene.js                      # Màn hình kết thúc lượt chơi
+│       ├── ShopScene.js                          # Tủ đồ: mua/trang bị skin & trail
+│       ├── LeaderboardScene.js                   # Bảng xếp hạng điểm cao cục bộ
+│       └── SettingsScene.js                      # Cài đặt âm thanh, hiệu ứng rung/giật, giảm chuyển động
 ├── game_design_document_gravity_cat_fish_chase.md # Tài liệu thiết kế chi tiết tựa game (GDD)
-├── asset-prompts.md                             # Hướng dẫn tạo tài nguyên hình ảnh với AI prompts
-├── assets/                                      # Thư mục chứa hình ảnh sprites (tùy chọn)
 └── README.md                                    # Tài liệu hướng dẫn dự án
 ```
+
+> Phaser 3 được nạp qua thẻ `<script>` trỏ tới CDN trong `index.html` — dự án không dùng build step, bundler hay `npm install`.
 
 ---
 
 ## 🎨 6. Tùy biến hình ảnh (Assets)
 
-Game được trang bị sẵn **Bộ kết xuất Vector Canvas 2D** nên hiển thị sắc nét và hoạt động hoàn chỉnh ngay cả khi thư mục `assets/` đang trống.
+Toàn bộ hình ảnh trong game hiện được **sinh ra hoàn toàn bằng mã (procedurally generated)** ngay lúc chạy, trong `src/textures.js`: mỗi texture (mèo, cá, bẫy, bục nhảy, biểu tượng UI...) được vẽ bằng `Phaser.GameObjects.Graphics` rồi "nướng" thành texture qua `generateTexture()` trong bước `preload()`/`create()` của `BootScene`. Không có file ảnh PNG/sprite nào được tải từ thư mục `assets/` — dự án hiện **không có** thư mục `assets/`.
 
-Nếu bạn muốn thay thế bằng hình ảnh sprite vẽ tay hoặc AI generate:
-1. Xem hướng dẫn và bộ prompt chuẩn hóa tại file [`asset-prompts.md`](./asset-prompts.md).
-2. Lưu các file ảnh PNG (nền trong suốt) vào thư mục `assets/` theo đúng danh sách tên định sẵn (`cat-run-1.png`, `fish.png`, `obstacle-cactus.png`,...).
-3. Tải lại trang, game sẽ tự động ưu tiên nạp các sprite ảnh mới!
+Đây là lựa chọn có chủ đích trong lần migrate sang Phaser 3 này, vì không có công cụ sinh ảnh nào khả dụng tại thời điểm thực hiện — không phải lỗi. Kết quả là hình khối đơn giản, rõ ràng nhưng chưa phải là artwork vẽ tay/AI-generate chi tiết.
+
+Nếu về sau muốn thay bằng sprite ảnh thật (vẽ tay hoặc AI generate):
+1. Thêm các file ảnh PNG (nền trong suốt) vào một thư mục `assets/` mới.
+2. Chỉ cần sửa bước sinh texture trong `BootScene` (`src/scenes/BootScene.js`) để `this.load.image(...)` các file đó thay vì gọi các hàm sinh texture trong `src/textures.js`, miễn là giữ nguyên các texture key hiện có.
+3. Vì mọi Scene khác chỉ tham chiếu texture theo **key** (không quan tâm texture đến từ đâu), không cần sửa gì thêm ở PlayScene/ShopScene/HomeScene...
 
 ---
 

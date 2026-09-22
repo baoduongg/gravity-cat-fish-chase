@@ -11,140 +11,46 @@
 </head>
 <body>
 <div id="game-container">
-  <canvas id="game-canvas"></canvas>
-
-  <!-- In-game HUD -->
-  <div id="hud" class="hidden">
-    <div class="hud-left">
-      <div class="hud-item hud-score-box">
-        <span class="hud-label">SCORE</span>
-        <span id="hud-score" class="hud-val">0</span>
-      </div>
-      <div id="hud-combo-badge" class="hud-combo-badge hidden">
-        COMBO <span id="hud-combo-mult">x2</span>
-      </div>
-    </div>
-    
-    <div class="hud-center">
-      <div class="hud-item hud-fish-box">
-        <span class="fish-icon">🐟</span>
-        <span id="hud-fish" class="hud-val">0</span>
-      </div>
-    </div>
-
-    <div class="hud-right">
-      <div class="hud-item hud-best-box">
-        <span class="hud-label">BEST</span>
-        <span id="hud-best" class="hud-val">0</span>
-      </div>
-      <button id="btn-sound-hud" class="icon-btn" title="Âm thanh" aria-label="Toggle Sound">🔊</button>
-    </div>
-  </div>
-
-  <!-- Start Screen -->
-  <div id="screen-start" class="screen">
-    <div class="card-modal main-card">
-      <div class="logo-wrap">
-        <div class="cat-logo-icon">🐱✨</div>
-        <h1 class="title">GRAVITY CAT<span class="title-sub">FISH CHASE</span></h1>
-      </div>
-      
-      <p class="subtitle">Platformer Cuộn Cảnh & Nhảy Bục Bắt Cá</p>
-
-      <div class="controls-guide">
-        <div class="guide-item">
-          <span class="key-badge">A</span> <span class="key-badge">D</span> hoặc <span class="key-badge">◀</span> <span class="key-badge">▶</span>
-          <span class="guide-text">Di chuyển Trái / Phải</span>
-        </div>
-        <div class="guide-item">
-          <span class="key-badge key-space">SPACE</span> / <span class="key-badge">W</span> / <span class="key-badge">▲</span>
-          <span class="guide-text">Nhảy & <b>Nhảy đôi</b> lên bục cao</span>
-        </div>
-      </div>
-
-      <div class="btn-group">
-        <button class="pill-btn pill-primary" id="btn-play">▶ CHƠI NGAY</button>
-        <button class="pill-btn pill-secondary" id="btn-open-shop">🛍️ TỦ ĐỒ & SKINS</button>
-      </div>
-
-      <div class="stats-bar">
-        <div class="stat-chip">🏆 Kỷ lục: <b id="start-best">0</b></div>
-        <div class="stat-chip">🐟 Tổng cá: <b id="start-total-fish">0</b></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Game Over Screen -->
-  <div id="screen-gameover" class="screen hidden">
-    <div class="card-modal gameover-card">
-      <div class="go-header">
-        <div class="go-icon">😿💦</div>
-        <h2 class="go-title">GAME OVER</h2>
-      </div>
-
-      <div class="go-stats-grid">
-        <div class="go-stat-item highlight">
-          <span class="go-label">ĐIỂM SỐ</span>
-          <span id="go-score" class="go-value">0</span>
-        </div>
-        <div class="go-stat-item">
-          <span class="go-label">KỶ LỤC</span>
-          <span id="go-best" class="go-value">0</span>
-        </div>
-        <div class="go-stat-item">
-          <span class="go-label">CÁ VÀNG LƯỢT NÀY</span>
-          <span id="go-fish" class="go-value">0</span>
-        </div>
-        <div class="go-stat-item">
-          <span class="go-label">TỔNG CÁ ĐANG CÓ</span>
-          <span id="go-total-fish" class="go-value">0</span>
-        </div>
-      </div>
-
-      <div class="btn-group">
-        <button class="pill-btn pill-primary" id="btn-retry">🔄 CHƠI LẠI</button>
-        <button class="pill-btn pill-secondary" id="btn-go-shop">🛍️ ĐỔI SKINS</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Shop Modal -->
-  <div id="screen-shop" class="screen hidden">
-    <div class="card-modal shop-card">
-      <div class="shop-header">
-        <h2>🛍️ TỦ ĐỒ CỦA MÈO</h2>
-        <div class="shop-balance">
-          <span>🐟</span> <b id="shop-total-fish">0</b>
-        </div>
-        <button id="btn-close-shop" class="close-btn" aria-label="Close">✕</button>
-      </div>
-
-      <div class="shop-tabs">
-        <button class="tab-btn active" id="tab-skins">Trang Phục Mèo</button>
-        <button class="tab-btn" id="tab-trails">Vệt Chạy (Trails)</button>
-      </div>
-
-      <div class="shop-content">
-        <!-- Skins Grid -->
-        <div id="grid-skins" class="items-grid"></div>
-        <!-- Trails Grid -->
-        <div id="grid-trails" class="items-grid hidden"></div>
-      </div>
-    </div>
-  </div>
 
   <!-- Mobile Touch Controls -->
   <div id="touch-controls" class="hidden">
     <div class="touch-side touch-left">
-      <button class="touch-btn" id="btn-touch-left" aria-label="Move Left">◀</button>
-      <button class="touch-btn" id="btn-touch-right" aria-label="Move Right">▶</button>
+      <button class="touch-btn" id="btn-left" aria-label="Move Left">◀</button>
+      <button class="touch-btn" id="btn-right" aria-label="Move Right">▶</button>
     </div>
     <div class="touch-side touch-right">
-      <button class="touch-btn touch-jump" id="btn-touch-jump" aria-label="Jump">▲<br><small>JUMP</small></button>
+      <button class="touch-btn touch-jump" id="btn-jump" aria-label="Jump">▲<br><small>JUMP</small></button>
     </div>
   </div>
 </div>
 
-<script src="game.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<script src="src/config.js"></script>
+<script src="src/catalog.js"></script>
+<script src="src/storage.js"></script>
+<script src="src/textures.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/scenes/BootScene.js"></script>
+<script src="src/scenes/HomeScene.js"></script>
+<script src="src/scenes/PlayScene.js"></script>
+<script src="src/scenes/GameOverScene.js"></script>
+<script src="src/scenes/PauseScene.js"></script>
+<script src="src/scenes/ShopScene.js"></script>
+<script src="src/scenes/LeaderboardScene.js"></script>
+<script src="src/scenes/SettingsScene.js"></script>
+<script>
+  new Phaser.Game({
+    type: Phaser.AUTO,
+    width: window.GCFC_CONFIG.WORLD_W,
+    height: window.GCFC_CONFIG.WORLD_H,
+    parent: "game-container",
+    backgroundColor: "#bfe6ff",
+    physics: {
+      default: "arcade",
+      arcade: { gravity: { y: 0 }, debug: false },
+    },
+    scene: [BootScene, HomeScene, PlayScene, GameOverScene, PauseScene, ShopScene, LeaderboardScene, SettingsScene],
+  });
+</script>
 </body>
 </html>
